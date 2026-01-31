@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'preact/hooks'
 
-export type FaceBox = {
+export type FaceDetectionData = {
   topLeft: [number, number]
   bottomRight: [number, number]
+  isLookingAtScreen: boolean
 }
 
 export const DetectorPreview = ({
@@ -10,7 +11,7 @@ export const DetectorPreview = ({
   faces,
 }: {
   src: string
-  faces: FaceBox[]
+  faces: FaceDetectionData[]
 }) => {
   const previewRef = useRef<HTMLImageElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -28,10 +29,10 @@ export const DetectorPreview = ({
     canvas.height = img.naturalHeight
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.strokeStyle = 'lime'
     ctx.lineWidth = 2
 
     faces.forEach(face => {
+      ctx.strokeStyle = face.isLookingAtScreen ? 'lime' : 'red'
       const [x1, y1] = face.topLeft
       const [x2, y2] = face.bottomRight
 

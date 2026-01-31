@@ -2,12 +2,12 @@ import './app.css'
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { useGazeAnalyzer } from './useGazeAnalyzer'
 import { DetectorPreview } from './DetectorPreview'
-import type { FaceBox } from './DetectorPreview'
+import type { FaceDetectionData } from './DetectorPreview'
 
 export function App() {
   const [isOnCameraCapture, setIsOnCameraCapture] = useState<boolean>(false)
   const [imageUrl, setImageUrl] = useState("")
-  const [predictions, setPredictions] = useState<FaceBox[]>([])
+  const [predictions, setPredictions] = useState<FaceDetectionData[]>([])
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
