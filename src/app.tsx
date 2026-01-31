@@ -23,17 +23,19 @@ export function App() {
   useEffect(() => {
     let intervalId: number
     if (!isLoadingVideo && !isLoadingModels) {
+      console.log('shouldReact', shouldReact)
       intervalId = window.setInterval(async () => {
         const predictions = await analyzeImage(videoRef.current!)
-        if (predictions) {
+        if (predictions && predictions?.length > 0) {
           setPredictions(predictions)
           const everyoneGazed = predictions.every(prediction => prediction.isLookingAtScreen)
           if (everyoneGazed) {
             gazed()
-          }
-          else {
+          } else {
             missed()
           }
+        } else {
+          missed()
         }
       }, REFRESH_INTERVAL_MS)
     }
