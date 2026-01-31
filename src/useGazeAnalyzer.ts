@@ -3,13 +3,22 @@ import * as tf from '@tensorflow/tfjs'
 import { useEffect, useState, useRef } from 'preact/hooks'
 import type { FaceDetectionData } from './DetectorPreview'
 
-// Standard MediaPipe Face Mesh Keypoints
-// 468: Left Iris Center, 473: Right Iris Center
-// 33: Left Eye Inner Corner, 133: Left Eye Outer Corner
-// 362: Right Eye Inner Corner, 263: Right Eye Outer Corner
+// Expanded Keypoints to include Vertical (Top/Bottom eyelids)
 const KEYPOINTS = {
-  LEFT_EYE: { inner: 33, outer: 133, iris: 468 },
-  RIGHT_EYE: { inner: 362, outer: 263, iris: 473 }
+  LEFT_EYE: {
+    inner: 33,
+    outer: 133,
+    top: 159,
+    bottom: 145,
+    iris: 468
+  },
+  RIGHT_EYE: {
+    inner: 362,
+    outer: 263,
+    top: 386,
+    bottom: 374,
+    iris: 473
+  }
 }
 
 type VisionSource = HTMLImageElement | HTMLVideoElement | HTMLCanvasElement
@@ -20,15 +29,15 @@ export const useGazeAnalyzer = () => {
 
   useEffect(() => {
     const loadModel = async () => {
+      // Reverted to WebGL backend as requested
       await tf.setBackend('webgl')
       await tf.ready()
 
-      // Load the MediaPipe FaceMesh model which supports Iris detection
       const model = await faceLandmarksDetection.createDetector(
         faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh,
         {
-          runtime: 'tfjs',
-          refineLandmarks: true, // Crucial: This enables Iris tracking
+          runtime: 'tfjs', // Standard JS runtime
+          refineLandmarks: true, // Essential for Iris tracking
           maxFaces: 1
         }
       )
@@ -41,48 +50,52 @@ export const useGazeAnalyzer = () => {
     loadModel()
   }, [])
 
-  // Calculate Euclidean distance between two points
   const distance = (p1: { x: number; y: number }, p2: { x: number; y: number }) => {
     return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
   }
 
   const isLookingAtScreen = (keypoints: faceLandmarksDetection.Keypoint[]): boolean => {
-    // If we don't have enough keypoints (FaceMesh has 478 with iris), fail safe
     if (keypoints.length < 478) return false
 
-    const checkEyeGaze = (indices: { inner: number; outer: number; iris: number }) => {
+    const checkEyeGaze = (indices: typeof KEYPOINTS.LEFT_EYE) => {
       const pInner = keypoints[indices.inner]
       const pOuter = keypoints[indices.outer]
+      const pTop = keypoints[indices.top]
+      const pBottom = keypoints[indices.bottom]
       const pIris = keypoints[indices.iris]
 
-      // Calculate the total width of the eye
+      // --- Horizontal Check ---
       const eyeWidth = distance(pInner, pOuter)
-
-      // Calculate distance from iris to inner corner
       const distToInner = distance(pIris, pInner)
+      const horizontalRatio = distToInner / eyeWidth
 
-      // Calculate the ratio (0 = inner corner, 1 = outer corner, 0.5 = center)
-      const ratio = distToInner / eyeWidth
+      // --- Vertical Check ---
+      const eyeHeight = distance(pTop, pBottom)
+      const distToTop = distance(pIris, pTop)
+      const verticalRatio = distToTop / eyeHeight
 
-      // If the ratio is roughly 0.5, the iris is in the center of the eye
-      // We allow a range of 0.4 to 0.6 for "looking straight"
-      // Adjust these bounds to make it stricter or looser
-      return ratio > 0.35 && ratio < 0.65
+      // Check Horizontal: 0.5 is center. < 0.35 is looking inside, > 0.65 is looking outside
+      const isHorizontalCenter = horizontalRatio > 0.35 && horizontalRatio < 0.65
+
+      // Check Vertical: 0.5 is center. 
+      // Higher value (> 0.5) means iris is far from top (looking down)
+      // Lower value (< 0.5) means iris is close to top (looking up)
+      // I set the limit to 0.6 to catch "looking below screen"
+      const isVerticalCenter = verticalRatio > 0.30 && verticalRatio < 0.60
+
+      return isHorizontalCenter && isVerticalCenter
     }
 
     const leftEyeLooking = checkEyeGaze(KEYPOINTS.LEFT_EYE)
     const rightEyeLooking = checkEyeGaze(KEYPOINTS.RIGHT_EYE)
 
-    // Consider looking at screen if both eyes are roughly centered
     return leftEyeLooking && rightEyeLooking
   }
 
   const mapPredictions = (predictions: faceLandmarksDetection.Face[]): FaceDetectionData[] => {
     return predictions.map(pred => {
       const { box, keypoints } = pred
-
       return {
-        // Map MediaPipe 'box' to the contract's expected coordinates
         topLeft: [box.xMin, box.yMin] as [number, number],
         bottomRight: [box.xMax, box.yMax] as [number, number],
         isLookingAtScreen: isLookingAtScreen(keypoints)
@@ -102,4 +115,3 @@ export const useGazeAnalyzer = () => {
 
   return { analyzeImage, isLoading }
 }
-
