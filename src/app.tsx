@@ -58,8 +58,6 @@ export function App() {
     const audio = audioRef.current
     if (!audio) return
 
-    console.log('should react', shouldReact)
-
     if (shouldReact) {
       audio.play().catch(e => console.log("Audio blocked until interaction", e))
     } else {
@@ -72,7 +70,7 @@ export function App() {
     <>
       <h1>Yellyyyyyyyy</h1>
       {(isLoadingModels || isLoadingVideo) ?? <>Loading...</>}
-      <div className={'preview-wrapper'}>
+      <div className={shouldReact ? 'preview-wrapper chaos-mode' : 'preview-wrapper'}>
         <video width={640} height={480} ref={videoRef}></video>
         <DetectorPreview faces={predictions} />
       </div>
