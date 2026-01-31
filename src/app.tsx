@@ -1,13 +1,14 @@
 import './app.css'
 import { useEffect, useRef, useState } from 'preact/hooks'
-import { useGazeAnalyzer } from './gazeAnalyzer'
+import { useGazeAnalyzer } from './useGazeAnalyzer'
+import { DetectorPreview } from './DetectorPreview'
 
 export function App() {
   const [isOnCameraCapture, setIsOnCameraCapture] = useState<boolean>(false)
+  const [imageUrl, setImageUrl] = useState("")
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const previewRef = useRef<HTMLImageElement>(null)
 
   const WIDTH = 640
   const HEIGHT = 480
@@ -42,8 +43,7 @@ export function App() {
       canvasRef.current.width = WIDTH;
       canvasRef.current.height = HEIGHT;
       context?.drawImage(videoRef.current!, 0, 0, canvasRef.current.width, canvasRef.current.height)
-      const image = canvasRef.current.toDataURL("image/png")
-      previewRef.current?.setAttribute("src", image)
+      setImageUrl(canvasRef.current.toDataURL("image/png"))
     }
   }
 
@@ -53,10 +53,10 @@ export function App() {
         <h1>Test video streaming first</h1>
         <video ref={videoRef}></video>
         <canvas ref={canvasRef} style={{ "display": "none" }}></canvas>
-        <img ref={previewRef} src={""} alt={"Photo preview"} ></img>
+        <DetectorPreview src={imageUrl} />
         <button onClick={toggleCameraOn}>Start/stop</button>
         <button onClick={takePicture}>Take Picture</button>
-        <button onClick={() => analyzeImage(previewRef.current!)}>Analyze image (see console)</button>
+        <button onClick={() => analyzeImage(canvasRef.current!)}>Analyze image (see console)</button>
       </>}</>
   )
 }

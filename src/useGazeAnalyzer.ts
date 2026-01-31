@@ -2,6 +2,8 @@ import * as blazeface from '@tensorflow-models/blazeface'
 import * as tf from '@tensorflow/tfjs'
 import { useEffect, useState, useRef } from 'preact/hooks'
 
+type VisionSource = HTMLImageElement | HTMLVideoElement | HTMLCanvasElement
+
 export const useGazeAnalyzer = () => {
   const [isLoading, setIsLoading] = useState(true)
   const modelRef = useRef<blazeface.BlazeFaceModel | null>(null)
@@ -20,10 +22,10 @@ export const useGazeAnalyzer = () => {
     loadModel()
   }, [])
 
-  const analyzeImage = async (image: HTMLImageElement) => {
+  const analyzeImage = async (source: VisionSource) => {
     if (!modelRef.current) return
 
-    const predictions = await modelRef.current.estimateFaces(image, false)
+    const predictions = await modelRef.current.estimateFaces(source, false)
     console.log(predictions)
 
     return predictions
