@@ -2,10 +2,12 @@ import './app.css'
 import { useEffect, useRef, useState } from 'preact/hooks'
 import { useGazeAnalyzer } from './useGazeAnalyzer'
 import { DetectorPreview } from './DetectorPreview'
+import type { FaceBox } from './DetectorPreview'
 
 export function App() {
   const [isOnCameraCapture, setIsOnCameraCapture] = useState<boolean>(false)
   const [imageUrl, setImageUrl] = useState("")
+  const [predictions, setPredictions] = useState<FaceBox[]>([])
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -53,10 +55,13 @@ export function App() {
         <h1>Test video streaming first</h1>
         <video ref={videoRef}></video>
         <canvas ref={canvasRef} style={{ "display": "none" }}></canvas>
-        <DetectorPreview src={imageUrl} />
+        <DetectorPreview src={imageUrl} faces={predictions} />
         <button onClick={toggleCameraOn}>Start/stop</button>
         <button onClick={takePicture}>Take Picture</button>
-        <button onClick={() => analyzeImage(canvasRef.current!)}>Analyze image (see console)</button>
+        <button onClick={async () => {
+          const predictions = await analyzeImage(canvasRef.current!)
+          if (predictions) setPredictions(predictions)
+        }}>Analyze image (see console)</button>
       </>}</>
   )
 }
