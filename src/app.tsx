@@ -1,6 +1,6 @@
 import './app.css'
 import { useEffect, useRef, useState } from 'preact/hooks'
-import { gazeAnalyzer } from './gazeAnalyzer'
+import { useGazeAnalyzer } from './gazeAnalyzer'
 
 export function App() {
   const [isOnCameraCapture, setIsOnCameraCapture] = useState<boolean>(false)
@@ -12,7 +12,7 @@ export function App() {
   const WIDTH = 640
   const HEIGHT = 480
 
-  const { analyzeImage } = gazeAnalyzer()
+  const { analyzeImage, isLoading } = useGazeAnalyzer()
 
   useEffect(() => {
     if (videoRef.current) {
@@ -49,13 +49,14 @@ export function App() {
 
   return (
     <>
-      <h1>Test video streaming first</h1>
-      <video ref={videoRef}></video>
-      <canvas ref={canvasRef} style={{ "display": "none" }}></canvas>
-      <img ref={previewRef} src={""} alt={"Photo preview"} ></img>
-      <button onClick={toggleCameraOn}>Start/stop</button>
-      <button onClick={takePicture}>Take Picture</button>
-      <button onClick={() => analyzeImage(previewRef.current!)}>Analyze image (see console)</button>
-    </>
+      {isLoading ? <>loading</> : <>
+        <h1>Test video streaming first</h1>
+        <video ref={videoRef}></video>
+        <canvas ref={canvasRef} style={{ "display": "none" }}></canvas>
+        <img ref={previewRef} src={""} alt={"Photo preview"} ></img>
+        <button onClick={toggleCameraOn}>Start/stop</button>
+        <button onClick={takePicture}>Take Picture</button>
+        <button onClick={() => analyzeImage(previewRef.current!)}>Analyze image (see console)</button>
+      </>}</>
   )
 }
