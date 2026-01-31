@@ -1,5 +1,5 @@
 import './app.css'
-import { useRef, useState } from 'preact/hooks'
+import { useEffect, useRef, useState } from 'preact/hooks'
 import { useGazeAnalyzer } from './useGazeAnalyzer'
 import { DetectorPreview } from './DetectorPreview'
 import type { FaceDetectionData } from './DetectorPreview'
@@ -11,6 +11,20 @@ export function App() {
   const { analyzeImage, isLoading: isLoadingModels } = useGazeAnalyzer()
   const { isLoading: isLoadingVideo } = useCameraInput(videoRef)
 
+  useEffect(() => {
+    let intervalId: number
+    if (!isLoadingVideo && !isLoadingModels) {
+      intervalId = window.setInterval(async () => {
+        const predictions = await analyzeImage(videoRef.current!)
+        if (predictions) setPredictions(predictions)
+      }, 500)
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId)
+    }
+  }, [isLoadingVideo, isLoadingModels])
+
   return (
     <>
       <h1>Yellyyyyyyyy</h1>
@@ -19,10 +33,6 @@ export function App() {
         <video width={640} height={480} ref={videoRef}></video>
         <DetectorPreview faces={predictions} />
       </div>
-      <button onClick={async () => {
-        const predictions = await analyzeImage(videoRef.current!)
-        if (predictions) setPredictions(predictions)
-      }}>Do I look at the screen?</button>
     </>
   )
 }
