@@ -5,6 +5,7 @@ import { DetectorPreview } from './DetectorPreview'
 import type { FaceDetectionData } from './DetectorPreview'
 import { useCameraInput } from './useCameraInput'
 import { useGazeCounter } from './useGazeCounter'
+import goatMp3 from './assets/goat.mp3'
 
 
 const REFRESH_INTERVAL_MS = 500
@@ -13,6 +14,7 @@ const MISSED_READINGS_LIMIT_SECONDS = 3
 export function App() {
   const [predictions, setPredictions] = useState<FaceDetectionData[]>([])
   const videoRef = useRef<HTMLVideoElement>(null)
+  const audioRef = useRef<HTMLAudioElement>(null)
   const { analyzeImage, isLoading: isLoadingModels } = useGazeAnalyzer()
   const { isLoading: isLoadingVideo } = useCameraInput(videoRef)
 
@@ -43,6 +45,27 @@ export function App() {
 
   useEffect(() => {
     console.log("COME BAAACK")
+  }, [shouldReact])
+
+  useEffect(() => {
+    const audio = new Audio(goatMp3)
+    audio.volume = 0.5
+    audio.loop = true
+    audioRef.current = audio
+  }, [])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    console.log('should react', shouldReact)
+
+    if (shouldReact) {
+      audio.play().catch(e => console.log("Audio blocked until interaction", e))
+    } else {
+      audio.pause()
+      audio.currentTime = 0
+    }
   }, [shouldReact])
 
   return (
