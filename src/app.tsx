@@ -6,6 +6,7 @@ export function App() {
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const previewRef = useRef<HTMLImageElement>(null)
 
   const WIDTH = 640
   const HEIGHT = 480
@@ -38,6 +39,8 @@ export function App() {
       canvasRef.current.width = WIDTH;
       canvasRef.current.height = HEIGHT;
       context?.drawImage(videoRef.current!, 0, 0, canvasRef.current.width, canvasRef.current.height)
+      const image = canvasRef.current.toDataURL("image/png")
+      previewRef.current?.setAttribute("src", image)
     }
   }
 
@@ -45,7 +48,8 @@ export function App() {
     <>
       <h1>Test video streaming first</h1>
       <video ref={videoRef}></video>
-      <canvas ref={canvasRef}></canvas>
+      <canvas ref={canvasRef} style={{ "display": "none" }}></canvas>
+      <img ref={previewRef} src={""} alt={"Photo preview"} ></img>
       <button onClick={toggleCameraOn}>Start/stop</button>
       <button onClick={takePicture}>Take Picture</button>
     </>
