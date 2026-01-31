@@ -66,3 +66,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.preview-wrapper {
+  position: relative;
+}
+
+.detector-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}

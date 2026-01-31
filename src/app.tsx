@@ -15,8 +15,10 @@ export function App() {
     <>
       <h1>Yellyyyyyyyy</h1>
       {(isLoadingModels || isLoadingVideo) ?? <>Loading...</>}
-      <video ref={videoRef} height={100} width={100}></video>
-      <DetectorPreview faces={predictions} />
+      <div className={'preview-wrapper'}>
+        <video width={640} height={480} ref={videoRef}></video>
+        <DetectorPreview faces={predictions} />
+      </div>
       <button onClick={async () => {
         const predictions = await analyzeImage(videoRef.current!)
         if (predictions) setPredictions(predictions)
