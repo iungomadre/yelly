@@ -1,5 +1,6 @@
 import './app.css'
 import { useEffect, useRef, useState } from 'preact/hooks'
+import { gazeAnalyzer } from './gazeAnalyzer'
 
 export function App() {
   const [isOnCameraCapture, setIsOnCameraCapture] = useState<boolean>(false)
@@ -10,6 +11,8 @@ export function App() {
 
   const WIDTH = 640
   const HEIGHT = 480
+
+  const { analyzeImage } = gazeAnalyzer()
 
   useEffect(() => {
     if (videoRef.current) {
@@ -52,6 +55,7 @@ export function App() {
       <img ref={previewRef} src={""} alt={"Photo preview"} ></img>
       <button onClick={toggleCameraOn}>Start/stop</button>
       <button onClick={takePicture}>Take Picture</button>
+      <button onClick={() => analyzeImage(previewRef.current!)}>Analyze image (see console)</button>
     </>
   )
 }
