@@ -6,64 +6,47 @@ export type FaceDetectionData = {
   isLookingAtScreen: boolean
 }
 
-export const DetectorPreview = ({
-  src,
-  faces,
-}: {
-  src: string
+type DetectorPreviewProps = {
   faces: FaceDetectionData[]
-}) => {
-  const previewRef = useRef<HTMLImageElement>(null)
+  width?: number
+  height?: number
+}
+
+export const DetectorPreview = ({
+  faces,
+  width = 640,
+  height = 480,
+}: DetectorPreviewProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const img = previewRef.current
     const canvas = canvasRef.current
-    if (!img || !canvas) return
-    if (!faces?.length) return
+    if (!canvas) return
 
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    canvas.width = img.naturalWidth
-    canvas.height = img.naturalHeight
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.lineWidth = 2
+    ctx.clearRect(0, 0, width, height)
 
     faces.forEach(face => {
-      ctx.strokeStyle = face.isLookingAtScreen ? 'lime' : 'red'
+      ctx.lineWidth = 4
+      ctx.strokeStyle = face.isLookingAtScreen ? '#00ff00' : '#ff0000'
+
       const [x1, y1] = face.topLeft
       const [x2, y2] = face.bottomRight
 
-      ctx.strokeRect(x1, y1, x2 - x1, y2 - y1)
+      ctx.beginPath()
+      ctx.rect(x1, y1, x2 - x1, y2 - y1)
+      ctx.stroke()
     })
-  }, [faces, src])
+  }, [faces, width, height])
 
   return (
-    <div style={{
-      position: "relative",
-      display: "inline-block"
-    }}>
-      <img
-        ref={previewRef}
-        src={src}
-        alt="Photo preview"
-        onLoad={() => {
-          const img = previewRef.current
-          const canvas = canvasRef.current
-          if (img && canvas) {
-            canvas.width = img.naturalWidth
-            canvas.height = img.naturalHeight
-          }
-        }}
-      />
-      <canvas style={{
-        position: "absolute",
-        top: 0,
-        left: 0
-      }} ref={canvasRef} />
-    </div>
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      className={'detector-preview'}
+    />
   )
 }
-
