@@ -1,81 +1,44 @@
-import './app.css'
-import { useEffect, useRef, useState } from 'preact/hooks'
-import { useGazeAnalyzer } from './useGazeAnalyzer'
-import { DetectorPreview } from './DetectorPreview'
-import type { FaceDetectionData } from './DetectorPreview'
-import { useCameraInput } from './useCameraInput'
-import { useGazeCounter } from './useGazeCounter'
-import goatMp3 from './assets/goat.mp3'
-
-
-const REFRESH_INTERVAL_MS = 500
-const MISSED_READINGS_LIMIT_SECONDS = 3
+import "./app.css";
+import { useEffect, useRef } from "preact/hooks";
+import { DetectorPreview } from "./DetectorPreview";
+import { useGazeDetectionInterval } from "./useGazeDetectionInterval";
+import goatMp3 from "./assets/goat.mp3";
 
 export function App() {
-  const [predictions, setPredictions] = useState<FaceDetectionData[]>([])
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const audioRef = useRef<HTMLAudioElement>(null)
-  const { analyzeImage, isLoading: isLoadingModels } = useGazeAnalyzer()
-  const { isLoading: isLoadingVideo } = useCameraInput(videoRef)
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const { gazed, missed, shouldReact } = useGazeCounter(REFRESH_INTERVAL_MS, MISSED_READINGS_LIMIT_SECONDS)
-
-  useEffect(() => {
-    let intervalId: number
-    if (!isLoadingVideo && !isLoadingModels) {
-      console.log('shouldReact', shouldReact)
-      intervalId = window.setInterval(async () => {
-        const predictions = await analyzeImage(videoRef.current!)
-        if (predictions && predictions?.length > 0) {
-          setPredictions(predictions)
-          const everyoneGazed = predictions.every(prediction => prediction.isLookingAtScreen)
-          if (everyoneGazed) {
-            gazed()
-          } else {
-            missed()
-          }
-        } else {
-          missed()
-        }
-      }, REFRESH_INTERVAL_MS)
-    }
-
-    return () => {
-      if (intervalId) clearInterval(intervalId)
-    }
-  }, [isLoadingVideo, isLoadingModels])
+  const { predictions, shouldReact, isLoading } = useGazeDetectionInterval({
+    videoRef,
+  });
 
   useEffect(() => {
-    console.log("COME BAAACK")
-  }, [shouldReact])
+    const audio = new Audio(goatMp3);
+    audio.volume = 0.5;
+    audio.loop = true;
+    audioRef.current = audio;
+  }, []);
 
   useEffect(() => {
-    const audio = new Audio(goatMp3)
-    audio.volume = 0.5
-    audio.loop = true
-    audioRef.current = audio
-  }, [])
-
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+    const audio = audioRef.current;
+    if (!audio) return;
 
     if (shouldReact) {
-      audio.play().catch(e => console.log("Audio blocked until interaction", e))
+      audio.play().catch((e) => console.log("Audio blocked until interaction", e));
     } else {
-      audio.pause()
-      audio.currentTime = 0
+      audio.pause();
+      audio.currentTime = 0;
     }
-  }, [shouldReact])
+  }, [shouldReact]);
 
   return (
     <>
       <h1>Yellyyyyyyyy</h1>
-      {(isLoadingModels || isLoadingVideo) ?? <>Loading...</>}
-      <div className={shouldReact ? 'preview-wrapper chaos-mode' : 'preview-wrapper'}>
-        <video width={640} height={480} ref={videoRef}></video>
+      {isLoading && <>Loading...</>}
+      <div className={shouldReact ? "preview-wrapper chaos-mode" : "preview-wrapper"}>
+        <video width={640} height={480} ref={videoRef} />
         <DetectorPreview faces={predictions} />
       </div>
     </>
-  )
+  );
 }
