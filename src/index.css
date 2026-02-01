@@ -89,3 +89,70 @@ button:focus-visible {
   border: 10px solid red;
   box-shadow: 0 0 50px red;
 }
+
+/* App layout */
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Intro panel */
+.intro-panel {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+}
+
+.intro-panel__card {
+  max-width: 420px;
+  padding: 2rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.intro-panel__title {
+  margin: 0 0 1.25rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.intro-panel__text {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.intro-panel__text:last-of-type {
+  margin-bottom: 1.5rem;
+}
+
+.intro-panel__button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: #646cff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.intro-panel__button:hover {
+  background: #535bf2;
+}
+
+.intro-panel__button:focus-visible {
+  outline: 2px solid #646cff;
+  outline-offset: 2px;
+}

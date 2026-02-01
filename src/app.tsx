@@ -1,27 +1,13 @@
-import "./app.css";
-import { useRef } from "preact/hooks";
-import { DetectorPreview } from "./DetectorPreview";
-import { useGazeDetectionInterval } from "./useGazeDetectionInterval";
-import { useReactionAudio } from "./useReactionAudio";
-import goatMp3 from "./assets/goat.mp3";
+import { useState } from "preact/hooks";
+import { IntroPanel } from "./IntroPanel";
+import { MainContent } from "./MainContent";
 
 export function App() {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasStarted, setHasStarted] = useState(false);
 
-  const { predictions, shouldReact, isLoading } = useGazeDetectionInterval({
-    videoRef,
-  });
+  if (!hasStarted) {
+    return <IntroPanel onStart={() => setHasStarted(true)} />;
+  }
 
-  useReactionAudio(shouldReact, goatMp3, { volume: 0.5, loop: true });
-
-  return (
-    <>
-      <h1>Yellyyyyyyyy</h1>
-      {isLoading && <>Loading...</>}
-      <div className={shouldReact ? "preview-wrapper chaos-mode" : "preview-wrapper"}>
-        <video width={640} height={480} ref={videoRef} />
-        <DetectorPreview faces={predictions} />
-      </div>
-    </>
-  );
+  return <MainContent />;
 }
