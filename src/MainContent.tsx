@@ -32,6 +32,8 @@ export function MainContent() {
       <div className={shouldReact ? "preview-wrapper chaos-mode" : "preview-wrapper"}>
         <video
           ref={videoRef}
+          width={videoSize.width}
+          height={videoSize.height}
           playsInline
           muted
           onLoadedMetadata={onVideoLoadedMetadata}
