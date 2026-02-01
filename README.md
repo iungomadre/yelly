@@ -52,5 +52,5 @@ npm run preview
 
 ## License
 
-MIT
+[WTFPL](http://www.wtfpl.net/)
 

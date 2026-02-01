@@ -10,6 +10,7 @@ export const translations = {
     introPrivacy: "Nothing is sent anywhere; everything runs locally in your browser.",
     start: "Start",
     loading: "Loading...",
+    license: "Licensed under WTFPL",
   },
   pl: {
     appTitle: "Yelly",
@@ -18,6 +19,7 @@ export const translations = {
     introPrivacy: "Żadne dane nie są zbierane; aplikacja działa lokalnie",
     start: "Start",
     loading: "Ładowanie...",
+    license: "Licencja WTFPL",
   },
 } as const;
 

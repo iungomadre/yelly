@@ -42,6 +42,11 @@ export function MainContent() {
           height={videoSize.height}
         />
       </div>
+      <footer className="app-footer">
+        <a href="http://www.wtfpl.net/" target="_blank" rel="noopener noreferrer">
+          {t("license")}
+        </a>
+      </footer>
     </>
   );
 }
