@@ -1,23 +1,24 @@
+import { useLanguage } from "./i18n";
+import { LanguageSwitch } from "./LanguageSwitch";
+
 type IntroPanelProps = {
   onStart: () => void;
 };
 
 export function IntroPanel({ onStart }: IntroPanelProps) {
+  const { lang, setLang, t } = useLanguage();
+
   return (
     <div className="intro-panel">
       <div className="intro-panel__card">
-        <h2 className="intro-panel__title">Yelly</h2>
-        <p className="intro-panel__text">
-          This app uses your camera to detect when you're looking at the screen.
-          If you look away for a few seconds, it will play a sound and enter
-          "chaos mode" until you look back.
-        </p>
-        <p className="intro-panel__text">
-          No video or face data is sent anywhere—everything runs in your
-          browser. You'll be asked for camera permission when you start.
-        </p>
+        <div className="intro-panel__header">
+          <h2 className="intro-panel__title">{t("introTitle")}</h2>
+          <LanguageSwitch lang={lang} setLang={setLang} />
+        </div>
+        <p className="intro-panel__text">{t("introBody1")}</p>
+        <p className="intro-panel__text">{t("introBody2")}</p>
         <button type="button" className="intro-panel__button" onClick={onStart}>
-          Start
+          {t("start")}
         </button>
       </div>
     </div>
