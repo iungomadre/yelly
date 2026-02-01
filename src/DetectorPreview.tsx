@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'preact/hooks'
+import type { FaceDetectionData } from './domain/FaceDetectionData'
 
-export type FaceDetectionData = {
-  topLeft: [number, number]
-  bottomRight: [number, number]
-  isLookingAtScreen: boolean
-}
 
 type DetectorPreviewProps = {
   faces: FaceDetectionData[]
