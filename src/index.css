@@ -140,8 +140,20 @@ button:focus-visible {
   color: rgba(255, 255, 255, 0.85);
 }
 
-.intro-panel__text:last-of-type {
-  margin-bottom: 1.5rem;
+.intro-panel__privacy {
+  margin: 0 0 1.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #e8f5e9;
+  border: 1px solid #81c784;
+  border-left: 4px solid #2e7d32;
+  border-radius: 6px;
+}
+
+.intro-panel__privacy::before {
+  content: "🔒 ";
 }
 
 .intro-panel__button {
@@ -196,17 +208,4 @@ button:focus-visible {
 .language-switch__btn:focus-visible {
   outline: 2px solid #646cff;
   outline-offset: 2px;
-}
-
-/* Main content header */
-.main-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.main-header h1 {
-  margin: 0;
 }

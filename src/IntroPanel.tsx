@@ -15,8 +15,8 @@ export function IntroPanel({ onStart }: IntroPanelProps) {
           <h2 className="intro-panel__title">{t("introTitle")}</h2>
           <LanguageSwitch lang={lang} setLang={setLang} />
         </div>
-        <p className="intro-panel__text">{t("introBody1")}</p>
-        <p className="intro-panel__text">{t("introBody2")}</p>
+        <p className="intro-panel__text">{t("introBody")}</p>
+        <p className="intro-panel__privacy">{t("introPrivacy")}</p>
         <button type="button" className="intro-panel__button" onClick={onStart}>
           {t("start")}
         </button>

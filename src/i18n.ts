@@ -6,20 +6,16 @@ export const translations = {
   en: {
     appTitle: "Yelly",
     introTitle: "Yelly",
-    introBody1:
-      "This app uses your camera to detect when you're looking at the screen. If you look away for a few seconds, it will play a sound and enter \"chaos mode\" until you look back.",
-    introBody2:
-      "No video or face data is sent anywhere—everything runs in your browser. You'll be asked for camera permission when you start.",
+    introBody: "Uses your camera to detect when you look at the screen. Look away for a few seconds and it will nicely ask you to come back.",
+    introPrivacy: "Nothing is sent anywhere; everything runs locally in your browser.",
     start: "Start",
     loading: "Loading...",
   },
   pl: {
     appTitle: "Yelly",
     introTitle: "Yelly",
-    introBody1:
-      "Ta aplikacja używa kamery, żeby wykryć, kiedy patrzysz w ekran. Jeśli odwrócisz wzrok na kilka sekund, włączy dźwięk i tryb \"chaos\", dopóki nie spojrzysz z powrotem.",
-    introBody2:
-      "Żadne wideo ani dane z twarzy nie są nigdzie wysyłane—wszystko działa w Twojej przeglądarce. Po naciśnięciu Start poprosimy o dostęp do kamery.",
+    introBody: "Kamera wykrywa, kiedy patrzysz w ekran. Gdy przestaniesz, poprosi o powrót.",
+    introPrivacy: "Żadne dane nie są zbierane; aplikacja działa lokalnie",
     start: "Start",
     loading: "Ładowanie...",
   },
