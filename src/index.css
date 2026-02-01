@@ -22,12 +22,20 @@ a:hover {
   color: #535bf2;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 h1 {
@@ -54,6 +62,12 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+@media (max-width: 480px) {
+  h1 {
+    font-size: 2em;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -69,13 +83,33 @@ button:focus-visible {
 
 .preview-wrapper {
   position: relative;
+  max-width: 100%;
+  margin: 0 auto;
+  aspect-ratio: 4 / 3;
+  background: #111;
+  overflow: hidden;
 }
 
-.detector-preview {
+.preview-wrapper video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  vertical-align: top;
+}
+
+.preview-wrapper .detector-preview {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 10;
+  pointer-events: none;
+}
+
+.detector-preview {
+  display: block;
 }
 
 @keyframes spin-chaos {
@@ -93,9 +127,17 @@ button:focus-visible {
 /* App layout */
 #app {
   max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
+  box-sizing: border-box;
+}
+
+@media (min-width: 481px) {
+  #app {
+    padding: 2rem;
+  }
 }
 
 /* Intro panel */
@@ -112,11 +154,19 @@ button:focus-visible {
 
 .intro-panel__card {
   max-width: 420px;
-  padding: 2rem;
+  width: 100%;
+  padding: 1.5rem;
   background: #1a1a1a;
   border-radius: 12px;
   border: 1px solid #333;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+}
+
+@media (min-width: 481px) {
+  .intro-panel__card {
+    padding: 2rem;
+  }
 }
 
 .intro-panel__header {
@@ -158,6 +208,7 @@ button:focus-visible {
 
 .intro-panel__button {
   width: 100%;
+  min-height: 44px;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 500;
@@ -166,6 +217,7 @@ button:focus-visible {
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .intro-panel__button:hover {
@@ -184,6 +236,8 @@ button:focus-visible {
 }
 
 .language-switch__btn {
+  min-width: 44px;
+  min-height: 44px;
   padding: 0.35rem 0.6rem;
   font-size: 0.85rem;
   font-weight: 500;
@@ -192,6 +246,7 @@ button:focus-visible {
   border: 1px solid #444;
   border-radius: 6px;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .language-switch__btn:hover {

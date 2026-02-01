@@ -24,7 +24,10 @@ export const useCameraInput = (videoRef: RefObject<HTMLVideoElement>) => {
     };
 
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: false })
+      .getUserMedia({
+        video: { facingMode: "user" },
+        audio: false,
+      })
       .then((s) => {
         stream = s;
         video.srcObject = s;
