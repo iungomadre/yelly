@@ -1,7 +1,7 @@
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection'
 import * as tf from '@tensorflow/tfjs'
 import { useEffect, useState, useRef } from 'preact/hooks'
-import type { FaceDetectionData } from './DetectorPreview'
+import type { FaceDetectionData } from './domain/FaceDetectionData'
 
 // Expanded Keypoints to include Vertical (Top/Bottom eyelids)
 const KEYPOINTS = {
